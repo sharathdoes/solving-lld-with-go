@@ -1,40 +1,40 @@
-# Explains File Structure
+# User Auth Service (Gin + GORM)
 
-user-auth-service/
-│
-├── cmd/
-│   └── server/
-│       └── main.go - to load configs and start the server
-│
-├── internal/
-│   ├── config/
-│   │   ├── config.go - load env variables and prepare configs
-│   │
-│   ├── database/
-│   │   └── postgres.go - connect with db and automatic migrations
-│   │
-│   ├── modules/
-│   │   └── auth/
-│   │       ├── auth_handler.go - handle http work like status codes and json errors
-│   │       ├── auth_service.go - connect all code - utils, repository, and model
-│   │       ├── auth_repository.go - actual communication with db 
-│   │       ├── auth_routes.go - to define routes of apis 
-│   │       ├── auth_dto.go - to define body of requests for apis
-│   │       └── auth_model.go - to define user model
-│   │
-│   ├── middleware/
-│   │   └── auth_middleware.go - auth middleware for userId
-│   │
-│   ├── utils/
-│   │   ├── jwt.go - to validate and generate jwt tokens
-│   │   ├── password.go - to compare and genreate hashed password
-│   │   └── token.go  - to create a hashedtoken
-│   │
-│   │
-│   └── server/
-│       └── server.go - create server and run function with all configs and db connections
-│
-│
-├── .env
-├── go.mod
-└── README.md
+## File Structure (one-line each)
+
+cmd/main.go – App entrypoint, loads config and starts server
+
+internal/config – Loads env config (DB URL, JWT secret, TTLs)
+
+internal/server – Gin engine setup, middleware, route registration
+
+internal/database – Postgres connection + AutoMigrate
+
+internal/modules/auth
+
+* auth_handler.go – HTTP handlers (signup, login, refresh)
+* auth_service.go – Business logic (hashing, tokens, rotation)
+* auth_repository.go – DB queries via GORM
+* auth_models.go – User and RefreshToken DB models
+* auth_routes.go – /auth route wiring
+* auth_dto.go – Request structs + validation
+
+internal/middleware – JWT auth middleware (access token validation)
+
+internal/utils
+
+* jwt.go – Generate & validate JWTs
+* password.go – Hash & compare passwords
+
+---
+
+## User Flow (8 steps)
+
+1. User signs up → password is hashed → user stored in DB
+2. User logs in with email + password
+3. Password is verified against hash
+4. Server issues short-lived access token (JWT with user_id)
+5. Server issues long-lived refresh token (random string)
+6. Refresh token hash is stored in DB (not the raw token)
+7. Client uses access token for protected APIs
+8. When access token expires, client calls /auth/refresh to get new tokens
