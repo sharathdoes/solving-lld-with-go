@@ -39,7 +39,7 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, st
 
   access, _ := utils.GenerateJWT(user.ID, s.secret, s.accessTTL)
 
-  refresh := uuid.NewString()
+	refresh := uuid.NewString()
 refreshHash := utils.HashToken(refresh)
 
   token := &RefreshTokenTTL{

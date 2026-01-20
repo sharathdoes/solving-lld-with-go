@@ -23,7 +23,6 @@ func New(cfg *config.Config) *Server {
 	}
 	auth.RegisterRoutes(r, database, cfg)
 	r.GET("/ping", modules.Health)
-	
 	return &Server{
 		engine: r,
 		config: cfg,
