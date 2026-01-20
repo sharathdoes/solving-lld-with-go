@@ -1,13 +1,22 @@
 package database
 
-
 import (
-  "context"
+  "gorm.io/driver/postgres"	
+  "gorm.io/gorm"
+    "user-auth-service/internal/modules/auth"
 
-  "github.com/jackc/pgx/v5/pgxpool"
 )
 
-func New(url string) (*pgxpool.Pool, error ){
-	  return pgxpool.New(context.Background(), url)
+func Connect(url string) (*gorm.DB, error) {
+   db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
+  if err != nil {
+    return nil, err
+  }
 
+  db.AutoMigrate(
+    &auth.User{},
+    &auth.RefreshTokenTTL{},
+  )
+
+   return db,nil
 }
