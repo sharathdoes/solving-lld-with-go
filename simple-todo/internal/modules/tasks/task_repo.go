@@ -19,7 +19,7 @@ func (r *Repository) CreateTask(ctx context.Context, task Task) error {
 }
 
 func (r *Repository) UpdateTask(ctx context.Context, task Task) error {
-	return r.db.WithContext(ctx).Model(&Task{}).Where("id = ? AND deletedAt is NULL", task.ID).Update(task).Error
+	return r.db.WithContext(ctx).Model(&Task{}).Where("id = ? AND deletedAt is NULL", task.ID).Updates(task).Error
 }
 
 func (r *Repository) DeleteTask(ctx context.Context, task Task) error {
@@ -34,6 +34,6 @@ func (r *Repository) GetAllTasks(ctx context.Context, task Task) ([]Task, error)
 
 func (r *Repository) FindById(ctx context.Context, id string) (Task, error) {
 	var task Task
-	err:=r.db.WithContext(ctx).First(&task, "id = ?", id).Error
+	err := r.db.WithContext(ctx).First(&task, "id = ?", id).Error
 	return task, err
 }
