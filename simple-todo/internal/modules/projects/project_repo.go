@@ -2,6 +2,8 @@ package projects
 
 import (
 	"context"
+	"simple-todo/internal/modules/auth"
+
 	"gorm.io/gorm"
 )
 
@@ -32,6 +34,35 @@ func (r *Repository) FindById(ctx context.Context, id string) (Project, error) {
     var project Project
 	err:=r.db.WithContext(ctx).Where("id = ? AND deleted_at IS NULL", id).First(&project).Error
 	return project, err
+}
+
+
+func (r *Repository) FindByIdWithMembers(
+    ctx context.Context,
+    id string,
+) (*Project, error) {
+    var project Project
+    err := r.db.
+        WithContext(ctx).
+        Preload("Owner").
+        Preload("Members").
+        First(&project, "id = ? AND deleted_at IS NULL", id).
+        Error
+    return &project, err
+}
+
+
+
+func (r *Repository) AppendMembers(
+    ctx context.Context,
+    projectID string,
+    members []auth.User,
+) error {
+    return r.db.
+        WithContext(ctx).
+        Model(&Project{ID: projectID}).
+        Association("Members").
+        Append(members)
 }
 
 

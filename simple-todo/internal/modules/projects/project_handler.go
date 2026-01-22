@@ -14,18 +14,52 @@ func NewHandler(srv *Service) *Handler {
 	return &Handler{srv: srv}
 }
 
-func (h *Handler) CreateProject(c *gin.Context ){
+func (h *Handler) CreateProject(c *gin.Context) {
 	var project CreateProjectDTO
-	if err:=c.ShouldBindBodyWithJSON(&project); err!=nil{
+	if err := c.ShouldBindJSON(&project); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-	proj, err:=h.srv.CreateProject(c, project.Title, project.Description, project.OwnerID, project.MemberIDs,)
-	if err!=nil{
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "UNAUTHORIZED"})
+		return
+	}
+	OwnerID := userIDRaw.(string)
+	proj, err := h.srv.CreateProject(c, project.Title, project.Description, OwnerID, project.MemberIDs)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, proj)
 }
 
-func(h )
+func (h *Handler) UpdateProject(c *gin.Context) {
+	var body UpdateProjectInput
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	userIDRaw, exists := c.Get("user_id")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "UNAUTHORIZED"})
+		return
+	}
+
+	OwnerID := userIDRaw.(string)
+	proj, err := h.srv.UpdateProject(c, body.ID, body.Title, body.Description, OwnerID, body.MemberIDs)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, proj)
+}
+
+func (h *Handler) GetProjects(c *gin.Context) {
+	proj, err := h.srv.GetProjects(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, proj)
+}

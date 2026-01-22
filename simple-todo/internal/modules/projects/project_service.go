@@ -23,7 +23,7 @@ func (s *Service) CreateProject(ctx context.Context, title string, description s
 		return nil, errors.New("OWNER_NOT_FOUND")
 	}
 	members, err := s.userRepo.FindByIds(ctx, member_ids)
-		if err != nil {
+	if err != nil {
 		return nil, errors.New("MEMBER_NOT_FOUND")
 	}
 	proj := &Project{ID: uuid.NewString(), Title: title, Description: description, Status: "Pending", OwnerID: owner.ID, Owner: *owner, Members: members}
@@ -33,34 +33,48 @@ func (s *Service) CreateProject(ctx context.Context, title string, description s
 	return proj, nil
 }
 
-func (s *Service) UpdateProject(ctx context.Context, projectID string, title string, description string, OwnerID string, member_ids []string) (*Project, error) {
-		project, err := s.repo.FindById(ctx, projectID)
-	if err != nil {
-		return nil, err
-	}
+func (s *Service) UpdateProject(
+    ctx context.Context,
+    projectID string,
+    title string,
+    description string,
+    ownerID string,
+    memberIDs []string,
+) (*Project, error) {
 
-	if title != "" {
-		project.Title = title
-	}
+    project, err := s.repo.FindByIdWithMembers(ctx, projectID)
+    if err != nil {
+        return nil, err
+    }
 
-	if description != "" {
-		project.Description = description
-	}
+    if title != "" {
+        project.Title = title
+    }
 
-	if member_ids != nil {
-		members, err := s.userRepo.FindByIds(ctx, member_ids)
-		if err != nil {
-			return nil, err
-		}
-		project.Members = members
-	}
+    if description != "" {
+        project.Description = description
+    }
 
-	if err := s.repo.UpdateProject(ctx, &project); err != nil {
-		return nil, err
-	}
+    // Update scalar fields only
+    if err := s.repo.UpdateProject(ctx, project); err != nil {
+        return nil, err
+    }
 
-	return &project, nil
+    // Append members separately
+    if len(memberIDs) > 0 {
+        members, err := s.userRepo.FindByIds(ctx, memberIDs)
+        if err != nil {
+            return nil, err
+        }
+
+        if err := s.repo.AppendMembers(ctx, project.ID, members); err != nil {
+            return nil, err
+        }
+    }
+
+    return project, nil
 }
+
 
 func (s *Service) GetProjects(ctx context.Context) ([]Project, error) {
 	return s.repo.GetProjects(ctx)
