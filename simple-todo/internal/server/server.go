@@ -19,7 +19,7 @@ type Server struct {
 func NewServer(c *config.Config) *Server {
 	r := gin.Default()
 	db, err := database.Connect(c.DBUrl)
-	database.RunMigrations(c.DBUrl)
+	// database.RunMigrations(c.DBUrl)
 	auth.RegisterRoutes(r, db, c)
 	tasks.TaskRoutes(r,db,c)
 	projects.ProjectRoutes(r,db,c)
