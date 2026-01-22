@@ -1,8 +1,9 @@
 package database
 
 import (
+	"simple-todo/internal/modules/auth"
 	"simple-todo/internal/modules/projects"
-    "simple-todo/internal/modules/auth"
+	"simple-todo/internal/modules/tasks"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -18,6 +19,7 @@ func Connect(url string) (*gorm.DB, error) {
     &auth.User{},
     &auth.RefreshTokenTTL{},
     &projects.Project{},
+    &tasks.Task{},
     )
 
    return db,nil

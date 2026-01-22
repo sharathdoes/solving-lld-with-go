@@ -17,10 +17,10 @@ func ProjectRoutes(r *gin.Engine, db *gorm.DB, cfg *config.Config){
 	h:=NewHandler(svc)
 	
 	g:=r.Group("/project")
+	g.GET("/getAll", h.GetProjects)
 	g.Use(middleware.AuthMiddleware(cfg.JWTSecret))
 	
 	g.POST("/create", h.CreateProject)
 	g.POST("/update", h.UpdateProject)
-	g.GET("/getAll", h.GetProjects)
 	
 }

@@ -26,14 +26,15 @@ func (r *Repository) SoftDeleteTask(ctx context.Context, task Task) error {
 	return r.db.WithContext(ctx).Model(&Task{}).Where("id = ? AND deleted_at IS NULL", task.ID).Update("deleted_at", gorm.Expr("NOW()")).Error
 }
 
-func (r *Repository) GetAllTasks(ctx context.Context, task Task) ([]Task, error) {
+func (r *Repository) GetAllTasks(ctx context.Context) ([]Task, error) {
 	var tasks []Task
-	err := r.db.WithContext(ctx).Where("deleted_at IS NULL").Find(&tasks).Error
+	err := r.db.WithContext(ctx).Where("deleted_at IS NULL").Preload("Project").
+Find(&tasks).Error
 	return tasks, err
 }
 
 func (r *Repository) FindById(ctx context.Context, id string) (Task, error) {
 	var task Task
-	err := r.db.WithContext(ctx).Where("id = ?", id).First(&task).Error
+	err := r.db.WithContext(ctx).Where("id = ?", id).Preload("Project").First(&task).Error
 	return task, err
 }

@@ -6,6 +6,7 @@ import (
 	"simple-todo/internal/database"
 	"simple-todo/internal/modules/auth"
 	"simple-todo/internal/modules/projects"
+	"simple-todo/internal/modules/tasks"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func NewServer(c *config.Config) *Server {
 	r := gin.Default()
 	database, err := database.Connect(c.DBUrl)
 	auth.RegisterRoutes(r, database, c)
-	
+	tasks.TaskRoutes(r,database,c)
 	projects.ProjectRoutes(r,database,c)
 	if err != nil {
 		panic("Database Connection Failed")

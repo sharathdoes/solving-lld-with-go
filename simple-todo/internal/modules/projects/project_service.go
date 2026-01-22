@@ -55,12 +55,10 @@ func (s *Service) UpdateProject(
         project.Description = description
     }
 
-    // Update scalar fields only
     if err := s.repo.UpdateProject(ctx, project); err != nil {
         return nil, err
     }
 
-    // Append members separately
     if len(memberIDs) > 0 {
         members, err := s.userRepo.FindByIds(ctx, memberIDs)
         if err != nil {
