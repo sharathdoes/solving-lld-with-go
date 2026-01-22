@@ -1,27 +1,30 @@
 package database
+
 import (
+	"embed"
 	"log"
-	"path/filepath"
-	"runtime"
 
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 )
 
-func RunMigrations(dbURL string) {
-	_, b, _, _ := runtime.Caller(0)
-	basepath := filepath.Join(filepath.Dir(b), "migrations")
+//go:embed migrations/*.sql
+var migrationsFS embed.FS
 
-	m, err := migrate.New(
-		"file://"+basepath,
-		dbURL,
-	)
+func RunMigrations(dbURL string) {
+	d, err := iofs.New(migrationsFS, "migrations")
 	if err != nil {
-		log.Fatal("Migration init error:", err)
+		log.Fatal(err)
+	}
+
+	m, err := migrate.NewWithSourceInstance("iofs", d, dbURL)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal("Migration run error:", err)
+		log.Fatal(err)
 	}
 
 	log.Println("✅ Migrations ran successfully")
