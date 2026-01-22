@@ -53,6 +53,19 @@ func (r *Repository) CreateUser(ctx context.Context, user *User) error {
 }
 
 
+func (r *Repository) FindByID(ctx context.Context, id string) (*User, error) {
+	var user User
+	err:=r.db.WithContext(ctx).Where("id = ?", id).First(&user).Error
+	return &user, err
+}
+
+func (r *Repository) FindByIds(ctx context.Context, member_ids []string) ([]User, error) {
+	var users []User
+  err:=r.db.WithContext(ctx).Where("id IN ?", member_ids).Find(&users).Error
+	return users, err
+}
+
+
 
 func (r *Repository) FindByEmail(ctx context.Context, email string) (*User, error) {
 	var user User

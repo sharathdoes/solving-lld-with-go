@@ -2,7 +2,6 @@ package projects
 
 import (
 	"context"
-
 	"gorm.io/gorm"
 )
 
@@ -20,19 +19,18 @@ func (r *Repository) CreateProject(ctx context.Context, project *Project) error 
 
 func (r *Repository) GetProjects(ctx context.Context) ( []Project,error ) {
 	var projects []Project
-	err:=r.db.WithContext(ctx).Find(&projects).Error
+	err:=r.db.WithContext(ctx).Where("deleted_at IS NULL").Preload("Members").Find(&projects).Error
 	return projects, err
 }
 
 
 func (r *Repository) UpdateProject(ctx context.Context, project *Project) error {
-    return r.db.WithContext(ctx).Save(project).Error
+	return r.db.WithContext(ctx).Model(&Project{}).Where("id = ? AND deleted_at IS NULL", project.ID).Updates(project).Error
 }
+
 func (r *Repository) FindById(ctx context.Context, id string) (Project, error) {
     var project Project
-	// err:=r.db.WithContext(ctx).Where("ID = ?", id).First(&project).Error
-	 err := r.db.WithContext(ctx).First(&project, "id = ?", id).Error
-
+	err:=r.db.WithContext(ctx).Where("id = ? AND deleted_at IS NULL", id).First(&project).Error
 	return project, err
 }
 
