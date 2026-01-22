@@ -18,10 +18,11 @@ type Server struct {
 
 func NewServer(c *config.Config) *Server {
 	r := gin.Default()
-	database, err := database.Connect(c.DBUrl)
-	auth.RegisterRoutes(r, database, c)
-	tasks.TaskRoutes(r,database,c)
-	projects.ProjectRoutes(r,database,c)
+	db, err := database.Connect(c.DBUrl)
+	database.RunMigrations(c.DBUrl)
+	auth.RegisterRoutes(r, db, c)
+	tasks.TaskRoutes(r,db,c)
+	projects.ProjectRoutes(r,db,c)
 	if err != nil {
 		panic("Database Connection Failed")
 	} else {
