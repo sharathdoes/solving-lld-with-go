@@ -1,0 +1,6 @@
+DROP TABLE IF EXISTS refresh_token_ttls;
+DROP TABLE IF EXISTS task_assignees;
+DROP TABLE IF EXISTS project_members;
+DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS users;
