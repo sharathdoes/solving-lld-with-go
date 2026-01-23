@@ -63,3 +63,13 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, proj)
 }
+
+func (h *Handler) FindByID(c *gin.Context) {
+	id := c.Param("id")
+	proj, err := h.srv.repo.FindById(c,id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, proj)
+}
