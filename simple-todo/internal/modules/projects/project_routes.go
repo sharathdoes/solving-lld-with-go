@@ -18,7 +18,8 @@ func ProjectRoutes(r *gin.Engine, db *gorm.DB, cfg *config.Config){
 	
 	g:=r.Group("/project")
 	g.GET("/getAll", h.GetProjects)
-	g.GET("/:id", h.FindByID)
+	// g.GET("/:id", h.FindByID)
+	g.GET("/getById",h.FindByID)
 	g.Use(middleware.AuthMiddleware(cfg.JWTSecret))
 
 	g.POST("/create", h.CreateProject)

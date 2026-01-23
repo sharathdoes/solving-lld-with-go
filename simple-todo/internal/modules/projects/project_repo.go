@@ -51,6 +51,14 @@ func (r *Repository) FindByIdWithMembers(
     return &project, err
 }
 
+func(r *Repository) FindMyProjects(ctx context.Context, id string) ([]Project, error){
+    var projects []Project
+    err:=r.db.WithContext(ctx).Where("id = ?", id).Find(projects).Error
+    if err!=nil{
+        return nil, err
+    }
+    return projects,nil
+}
 
 
 func (r *Repository) AppendMembers(

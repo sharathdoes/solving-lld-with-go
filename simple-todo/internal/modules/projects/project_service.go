@@ -77,3 +77,8 @@ func (s *Service) UpdateProject(
 func (s *Service) GetProjects(ctx context.Context) ([]Project, error) {
 	return s.repo.GetProjects(ctx)
 }
+
+
+// func (s *Service) FindMyProjects(ctx context.Context,) ([]Project,error){
+
+// }
