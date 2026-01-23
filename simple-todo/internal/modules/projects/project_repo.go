@@ -53,7 +53,7 @@ func (r *Repository) FindByIdWithMembers(
 
 func(r *Repository) FindMyProjects(ctx context.Context, id string) ([]Project, error){
     var projects []Project
-    err:=r.db.WithContext(ctx).Where("id = ?", id).Find(projects).Error
+    err:=r.db.WithContext(ctx).Where("owner_id = ?", id).Find(&projects).Error
     if err!=nil{
         return nil, err
     }

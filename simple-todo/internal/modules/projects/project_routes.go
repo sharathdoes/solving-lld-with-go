@@ -20,6 +20,7 @@ func ProjectRoutes(r *gin.Engine, db *gorm.DB, cfg *config.Config){
 	g.GET("/getAll", h.GetProjects)
 	// g.GET("/:id", h.FindByID)
 	g.GET("/getById",h.FindByID)
+	g.GET("/getMyProjects",h.FindMyProjects)
 	g.Use(middleware.AuthMiddleware(cfg.JWTSecret))
 
 	g.POST("/create", h.CreateProject)
