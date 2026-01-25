@@ -1,9 +1,7 @@
 package database
 
 import (
-	"simple-todo/internal/modules/auth"
-	"simple-todo/internal/modules/projects"
-	"simple-todo/internal/modules/tasks"
+	"simple-todo/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,10 +14,10 @@ func Connect(url string) (*gorm.DB, error) {
     return nil, err
   }
    db.AutoMigrate(
-    &auth.User{},
-    &auth.RefreshTokenTTL{},
-    &projects.Project{},
-    &tasks.Task{},
+    &models.User{},
+    &models.RefreshTokenTTL{},
+    &models.Project{},
+    &models.Task{},
     )
 
    return db,nil

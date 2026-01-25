@@ -63,10 +63,28 @@ func (h *Handler) GetProjects(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, proj)
 }
+func (h *Handler) GetProjectsWithTasks(c *gin.Context) {
+	proj, err := h.srv.GetProjectsWithTasks(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, proj)
+}
 
 func (h *Handler) FindByID(c *gin.Context) {
 	id := c.Query("id")
 	proj, err := h.srv.repo.FindById(c,id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, proj)
+}
+
+func (h *Handler) FindByIdWithMembersAndTasks(c *gin.Context) {
+	id := c.Query("id")
+	proj, err := h.srv.repo.FindByIdWithMembersAndTasks(c,id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return

@@ -1,4 +1,4 @@
-package auth
+package models
 
 import "time"
 
@@ -11,8 +11,8 @@ type User struct {
 }
 
 type RefreshTokenTTL struct {
-	ID     string   `gorm:"primaryKey"`
-	UserId string `gorm:"index"`
+  ID     string   `gorm:"primaryKey"`
+  UserId string `gorm:"index"`
   TokenHash string `gorm:"not null"`
   ExpiresAt time.Time
   Revoked   bool

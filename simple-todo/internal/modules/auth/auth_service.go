@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"simple-todo/internal/models"
 	"simple-todo/internal/utils"
 	"time"
 
@@ -25,7 +26,7 @@ func (s *Service) SignUp(ctx context.Context, username string, email string, pas
 	if err != nil {
 		return err
 	}
-	user := &User{
+	user := &models.User{
 		ID:       uuid.NewString(),
 		Username: username, Email: email, Password: hashedPassword}
 	return s.repo.CreateUser(ctx, user)
@@ -42,7 +43,7 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, st
 	refresh := uuid.NewString()
 	refreshHash := utils.HashToken(refresh)
 
-	token := &RefreshTokenTTL{
+	token := &models.RefreshTokenTTL{
 		ID:        uuid.NewString(),
 		UserId:    user.ID,
 		TokenHash: refreshHash,
@@ -86,7 +87,7 @@ func (s *Service) Refresh(
 	newRefresh := uuid.NewString()
 	newHash := utils.HashToken(newRefresh)
 
-	_ = s.repo.SaveRefreshToken(ctx, &RefreshTokenTTL{
+	_ = s.repo.SaveRefreshToken(ctx, &models.RefreshTokenTTL{
 		ID:        uuid.NewString(),
 		UserId:    stored.UserId,
 		TokenHash: newHash,

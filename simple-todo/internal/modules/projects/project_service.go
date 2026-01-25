@@ -78,6 +78,10 @@ func (s *Service) GetProjects(ctx context.Context) ([]Project, error) {
 	return s.repo.GetProjects(ctx)
 }
 
+func (s *Service) GetProjectsWithTasks(ctx context.Context) ([]Project, error) {
+	return s.repo.GetProjectsWithTasks(ctx)
+}
+
 
 // func (s *Service) FindMyProjects(ctx context.Context,) ([]Project,error){
 
