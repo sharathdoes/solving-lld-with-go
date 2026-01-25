@@ -54,14 +54,6 @@ simple-todo/
 └── go.mod
 ```
 
-## Getting Started
-
-### Prerequisites
-- Go 1.20+
-- PostgreSQL
-- Environment variables configured
-
-
 
 ## Module Structure
 
@@ -75,6 +67,17 @@ module/
 ├── {module}_routes.go      # Route definitions with middleware
 ├── {module}_dto.go         # Request/Response DTOs
 ```
+
+
+## Getting Started
+
+### Prerequisites
+- Go 1.20+
+- PostgreSQL
+- Environment variables configured
+
+
+
 
 ### Setup
 
