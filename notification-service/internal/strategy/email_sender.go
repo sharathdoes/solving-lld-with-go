@@ -13,8 +13,6 @@ type EmailSender struct {
 	providers []EmailProvider
 }
 
-
-
 func NewEmailSender(p []EmailProvider) *EmailSender {
 	return &EmailSender{providers: p}
 }
