@@ -1,10 +1,11 @@
 package delivery
 
 import (
-	"bytes"
-	"fmt"
+	"crypto/tls"
 	"log"
-	"net/smtp"
+
+	"gopkg.in/gomail.v2"
+
 	"notification-service/internal/domain"
 )
 type EmailSender struct {
@@ -16,27 +17,21 @@ type EmailSender struct {
 }
 
 func (e EmailSender) Send(event domain.NotificationEvent){
-	log.Printf("this is an email %s " , event.Title )
-	addr := e.SMTPHost + ":" + e.SMTPPort
-    auth := smtp.PlainAuth("", e.Username, e.Password, e.SMTPHost)
+	log.Printf("this is an email %s to %s " , event.Title, event.Email )
+	m := gomail.NewMessage()
+    m.SetHeader("From", e.From)
+    m.SetHeader("To", event.Email)
+    m.SetHeader("Subject", event.Title)
+    m.SetBody("text/plain", event.Message)
 
-    // 2. Build the message with a buffer to ensure clean byte handling
-    var msg bytes.Buffer
-    msg.WriteString(fmt.Sprintf("From: %s\r\n", e.From))
-    msg.WriteString(fmt.Sprintf("To: %s\r\n", event.Email))
-    msg.WriteString(fmt.Sprintf("Subject: %s\r\n", event.Title))
-    msg.WriteString("MIME-Version: 1.0\r\n")
-    msg.WriteString("Content-Type: text/plain; charset=\"utf-8\"\r\n")
-    msg.WriteString("\r\n") // Critical empty line
-    msg.WriteString(event.Message)
-
-    // 3. Send
-    err := smtp.SendMail(addr, auth, e.From, []string{event.Email}, msg.Bytes())
-	   // 3. Attempt the send
-	if err!=nil {
-		log.Print("Email send Failed", err)
-		return
-	}
+    // Gomail handles the dialer, TLS, and RFC formatting for you
+    d := gomail.NewDialer(e.SMTPHost, 587, e.Username, e.Password)
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
+    if err := d.DialAndSend(m); err != nil {
+        log.Printf("Failed: %v", err)
+        return
+    }
+    log.Printf("✅ Success! Sent to %s", event.Email)
 
 	log.Print("Email sent to :", event.Email )
 

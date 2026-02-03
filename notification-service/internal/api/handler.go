@@ -9,7 +9,7 @@ import (
 )
 
 type CreateNotificationRequest struct {
-	UserID string `json:"userid"`
+	UserID string `json:"user_id"`
 	Type string `json:"type"`
 	Title string `json:"title"`
 	Message string `json:"message"`
@@ -36,6 +36,7 @@ func createNotificion(c *gin.Context){
 		TypeofN:    domain.NotificationType(req.Type),
 		Title:   req.Title,
 		Message: req.Message,
+		Email:   req.Email,
 	}
 
 	c.JSON(http.StatusAccepted, gin.H{"status": "queued"})
