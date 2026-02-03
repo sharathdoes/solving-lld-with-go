@@ -3,17 +3,14 @@ package domain
 type NotificationType string
 
 const (
-	Email NotificationType="email"
-	SMS   NotificationType = "sms"
-	Push  NotificationType = "push"
+	InApp NotificationType = "IN_APP"
+	Email NotificationType = "EMAIL"
 )
 
-
-type Notification struct {
-	ID      string
-	Type    NotificationType
-	To      string
-	Title   string
+type NotificationEvent struct {
+	UserId string
+	TypeofN NotificationType
+	Title string
 	Message string
-	Retries int
+	Email string
 }
