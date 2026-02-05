@@ -21,20 +21,34 @@ func NewBankService() *Bankservice{
 	}
 }
 
-func (b *Bankservice) createAccount( pin string, username string)  {
+func (b *Bankservice) CreateAccount( pin string, username string) string {
 	acc:=account.NewAccount(username)
 	card:=account.NewCard(pin)
 	b.cardAccounts[card]=acc
 	b.Accounts[acc.AccountNum]=acc
+		b.Cards[card.CardNum] = card
+	return card.CardNum
 }
 
 func(b *Bankservice) AddCard(pin string, accountNumber string ){
 	acc:=b.Accounts[accountNumber]
 	card:=account.NewCard(pin)
 	b.cardAccounts[card]=acc
+		b.Cards[card.CardNum] = card
+
 }
 
+func(b *Bankservice)Authenticate(cardNum string, pin string) error {
+	card, ok := b.Cards[cardNum]
+	if !ok {
+		return errors.New("Card is fake")
+	}
+	if err:=card.VerifyCard(pin); err!=nil {
+		return errors.New("Card pin entered wrong")
+	}
+	return nil
 
+}
 func (b *Bankservice) GetBalance(cardNum, pin string) (float64, error) {
 	b.mu.RLock()
 	defer b.mu.RUnlock()
@@ -42,10 +56,6 @@ func (b *Bankservice) GetBalance(cardNum, pin string) (float64, error) {
 	card, ok := b.Cards[cardNum]
 	if !ok {
 		return 0, errors.New("card not found")
-	}
-
-	if card.Pin != pin {
-		return 0, errors.New("incorrect PIN")
 	}
 
 	acc, ok := b.cardAccounts[card]
@@ -63,10 +73,6 @@ func (b *Bankservice) DepositMoney(cardNum string, pin string, amount float64) e
 	b.mu.RLock()
 	defer b.mu.RUnlock()
 	card:=b.Cards[cardNum]
-
-	if err:=card.VerifyCard(pin); err!=nil {
-		return errors.New("Incorrect pin")
-	}
 
 	acc, ok := b.cardAccounts[card]
 	if !ok {
