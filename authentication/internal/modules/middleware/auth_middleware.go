@@ -3,7 +3,7 @@ package middleware
 import (
 	"strings"
 
-	"user-auth-service/internal/utils"
+	"authentication/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )

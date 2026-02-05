@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"user-auth-service/internal/config"
-	"user-auth-service/internal/server"
+	"authentication/internal/config"
+	"authentication/internal/server"
 )
 
 func main() {

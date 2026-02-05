@@ -1,7 +1,7 @@
 package auth
 
 import (
-  "user-auth-service/internal/config"
+  "authentication/internal/config"
 
   "github.com/gin-gonic/gin"
   "gorm.io/gorm"

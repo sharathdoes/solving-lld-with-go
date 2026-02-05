@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"time"
-	"user-auth-service/internal/utils"
+	"authentication/internal/utils"
 
 	"github.com/google/uuid"
 )

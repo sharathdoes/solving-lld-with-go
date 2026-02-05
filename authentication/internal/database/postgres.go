@@ -3,7 +3,7 @@ package database
 import (
   "gorm.io/driver/postgres"	
   "gorm.io/gorm"
-    "user-auth-service/internal/modules/auth"
+    "authentication/internal/modules/auth"
 
 )
 

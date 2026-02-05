@@ -1,11 +1,11 @@
 package server
 
 import (
-	"user-auth-service/internal/config"
-	"user-auth-service/internal/modules/auth"
-	"user-auth-service/internal/modules/health"
+	"authentication/internal/config"
+	"authentication/internal/modules/auth"
+	"authentication/internal/modules/health"
 
-	"user-auth-service/internal/database"
+	"authentication/internal/database"
 
 	"github.com/gin-gonic/gin"
 )
