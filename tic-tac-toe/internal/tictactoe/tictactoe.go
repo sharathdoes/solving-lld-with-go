@@ -2,5 +2,7 @@ package tictactoe
 
 type TicTacToe struct {
 	Board Board
-	PlayerOne 
+	Player1 Player
+	Player2 Player
+	
 }
