@@ -2,6 +2,7 @@ package dispatcher
 
 import (
 	"elevator-system/internal/elevator"
+	"math"
 )
 
 type Dispatcher struct {
@@ -19,10 +20,10 @@ func (d *Dispatcher) AddElevator(e *elevator.Elevator) {
 
 func (d *Dispatcher) FindBestElevator(floor int, direction *elevator.Direction) *elevator.Elevator {
 	var BestElevator *elevator.Elevator
-	var minScore int = -1
+	var minScore int = math.MaxInt32
 	for _, e := range d.Elevators {
 		e.Mu.Lock()
-		score := ScoreThisElevator(e, floor, direction)
+		score := ScoreThisElevator(e, floor, *direction)
 		e.Mu.Unlock()
 
 		if score < minScore {
@@ -40,15 +41,21 @@ func abs(x int) int {
 	return x
 }
 
-func ScoreThisElevator(e *elevator.Elevator, floor int, direction *elevator.Direction) int {
-	score := abs(floor - e.CurrentFloor)
+func ScoreThisElevator(
+    e *elevator.Elevator,
+    floor int,
+    direction elevator.Direction,
+) int {
 
-	if (e.CurrentDirection == elevator.Up && *direction == elevator.Up) || (e.CurrentDirection == elevator.Down && *direction == elevator.Down) {
-		score -= 2
-	}
-	if e.CurrentDirection == elevator.Idle {
-		score -= 5
-	}
-	return score
+    score := abs(floor - e.CurrentFloor)
 
+    if e.CurrentDirection == direction {
+        score -= 2
+    }
+
+    if e.CurrentDirection == elevator.Idle {
+        score -= 5
+    }
+
+    return score
 }

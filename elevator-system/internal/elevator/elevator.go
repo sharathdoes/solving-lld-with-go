@@ -76,6 +76,9 @@ func(e *Elevator)ProcessSteps(){
 func (e *Elevator) AddStop(floor int) {
 	e.Mu.Lock()
 	defer e.Mu.Unlock()
+if floor == e.CurrentFloor {
+    return
+}
 
 	if floor > e.CurrentFloor {
 		e.UpQueue[floor]=true
